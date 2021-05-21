@@ -1,5 +1,5 @@
-@ Trabalho de AOC - Christian A. Carneiro e Raian A. Moretti
-
+@ Trabalho de AOC 
+@ - Christian A. Carneiro e Raian Moretti
 
 @ Those are binds to make the swi more meaningful
 .equ Seg8, 0x200                                    @ Display on the 8 Segments the value in r0
@@ -20,8 +20,7 @@
 .equ SEG_G,0x01
 
 .text
-@ Binds for the characters used on the program
-
+@ Binds for the characters used in the program
 str_hyphen: .asciz "-"
 str_space:  .asciz " "
 str_hash:  .asciz "#"
@@ -400,7 +399,7 @@ checkPercent:
 
 	b Start
 
-@ In this case r6 will be the position of the right number on Digits
+@ In this case r6 will be the position of the number or "A" on Digits of the 8-segment Display
 Perc0:
 	mov r6, #0
 	b Key
@@ -435,7 +434,7 @@ PercA:
 	mov r6, #10
 	b Key
 
-@ Each function is printing a number (in hexa) on the 8 Segment Display
+@ Each function is printing a number on the 8 Segment Display
 Key:
     ldr r1, =Digits                                 @ Load the macros on r1
     ldr r0, [r1, r6, lsl#2]                         @ Puts on r0 the digits and the position stored in r6
