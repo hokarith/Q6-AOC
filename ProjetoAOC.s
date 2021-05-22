@@ -1,5 +1,26 @@
 @ Trabalho de AOC 
-@ - Christian A. Carneiro e Raian Moretti
+@ Nome: Christian A. Carneiro
+@ 		Raian Moretti
+
+@ O projeto funciona da seguinte forma:
+@ a) Inicialmente, com PrintCursor o '-' é impresso em tela no canto superior esquerdo
+
+@ b) PrintLeft, PrintRight, PrintDown, PrintUp movimentam o cursor
+@ e PrintSpace, PrintHash, PrintStar, PrintHyphen, PrintO imprimem na tela os caracteres correspondentes
+@ (" ", "#", "*", "-", "O")
+
+@ c) Nesse ponto tivemos algumas dificuldades, os botões pretos são manipulados por RightB e LeftB
+@ O RightB inverte o conteúdo da posição do cursor, " " -> "#";
+@ 													"*", "#", "-", "O" -> " " 
+@ O LeftB limpa a tela de LCD 
+
+@ d) LED manipula os Red LEDS chamando LeftLED quando o conteúdo no cursor é diferente de espaço (acendendo o LED da esquerda)
+@ e chama RightLED quando o conteúdo no cursor for igual a espaço (acendendo o LED da direita)
+
+@ e) Nesse ponto tbm tivemos alguns problemas, CheckPercent verifica a quantidade de vezes que caracteres diferentes
+@ de espaço foram escritos na tela de LCD, quando chega-se ao número proporcional da tela (10%, 20%, ... , 100%), altera-se o valor no Display de 8 segmentos
+@ a partir da verificação com Percent0, Percent1, ..., PercentA e então é impresso na tela de 8 segmentos com Key.
+
 
 @ Those are binds to make the swi more meaningful
 .equ Seg8, 0x200                                    @ Display on the 8 Segments the value in r0
@@ -72,8 +93,6 @@ PrintCursor:
 	swi Print
     ldr r2, =LINHA0 
 	b Start  
-
-ClearCursor:
 
 @ Prints the ' ' in r2 on the position 'x' = r8 and 'y' = r9, current position of the cursor
 PrintSpace:
@@ -226,9 +245,9 @@ PrintDown:
 	b PrintCursor
 	bne Start
 @ Compares if the content in the cursor's position is a " "
-@ If it calls PrintHash otherwise PrintSpace is called
+@ If it is, PrintHash is called otherwise PrintSpace is called
 Inverter:
-	ldr r5, =LINHA0
+	mov r5, r2 		@ Before we tried to use =Linha0 instead of r2 
 	
 	ldr r6, =str_space
 	cmp r5, r6
@@ -245,14 +264,14 @@ LED:
 
 @ Lights up the left LED
 LeftLED:
-	mov r0, #0x01
+	mov r0, #0x01	@ Value of the LeftLED
 	swi RedLED
     b Start
 
 
 @ Lights up the right LED
 RightLED:
-	mov r0, #0x02
+	mov r0, #0x02	@ Value of the RightLED
 	swi RedLED
     b Start
 
